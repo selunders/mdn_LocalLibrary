@@ -16,11 +16,11 @@ class Language(models.Model):
     name = models.CharField(max_length=200, help_text="Enter the book's natural language (e.g. English, Spanish, Japanese, etc.")
 
     def __str__(self):
-        """String for representing the Lanuage object"""
+        """String for representing the Language object"""
         return self.name
 
 
-class Book(models.Model):
+class Book(models.Model):  
     """Model representing a book (but not a specific copy of a book)."""
     title = models.CharField(max_length=200)
 
