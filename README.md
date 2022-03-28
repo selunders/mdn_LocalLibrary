@@ -1,2 +1,2 @@
 # LocalLibrary Django Project
-**By MDN**
+**From MDN tutorial**
