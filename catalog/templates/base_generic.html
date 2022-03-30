@@ -22,13 +22,15 @@
         <div class="col-sm-2">
           {% block sidebar %}
           {% if user.is_authenticated %}
-          <p>Welcome, {{ user.first_name }}</p>
           {% endif %}
           <ul class="sidebar-nav">
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'books' %}">All books</a></li>
             <li><a href="{% url 'authors' %}">All authors</a></li>
             {% if user.is_authenticated %}
+            <br/>
+            <li>Welcome, {{ user.first_name }}</li>
+            <li><a href="{% url 'my-borrowed' %}">My books</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
