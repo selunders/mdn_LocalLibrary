@@ -80,6 +80,7 @@ class BookInstance(models.Model):
 
     class Meta:
         ordering = ['due_back'] # The model metadata (Class Meta) uses this field to order records when they are returned in a query.
+        permissions = (("can_mark_returned", "Set book as returned"),)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -98,7 +99,6 @@ class BookInstance(models.Model):
         if self.due_back and date.today() > self.due_back:
             return True
         return False
-
 
 
 class Author(models.Model):
