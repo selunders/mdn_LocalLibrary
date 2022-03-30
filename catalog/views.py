@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views import generic
+from flask import request_started
 
 # Create your views here.
 from .models import Book, Author, BookInstance, Genre
@@ -21,6 +22,8 @@ def index(request):
 
     num_dragon_books = Book.objects.filter(title__icontains='dragon').count()
 
+    num_visits = request.session.get('num_visits', 1)
+    request.session['num_visits'] = num_visits + 1
 
     context = {
         'num_books': num_books,
@@ -29,7 +32,7 @@ def index(request):
         'num_authors': num_authors,
         'num_fiction_genres': num_fiction_genres,
         'num_dragon_books': num_dragon_books,
-
+        'num_visits': num_visits,
     }
 
     # Render the HTML template index.html with the data in the context variable
