@@ -35,6 +35,11 @@
             {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
+            {% if perms.catalog.can_mark_returned %}
+            <br/>
+            <li>Staff Links</li>
+            <li><a href="{% url 'all-borrowed' %}">Books Out</a></li>
+            {% endif %}
           </ul>
           {% endblock %} 
         </div>
