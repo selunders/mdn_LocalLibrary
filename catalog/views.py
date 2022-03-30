@@ -21,6 +21,7 @@ def index(request):
 
     num_dragon_books = Book.objects.filter(title__icontains='dragon').count()
 
+
     context = {
         'num_books': num_books,
         'num_instances': num_instances,
@@ -28,6 +29,7 @@ def index(request):
         'num_authors': num_authors,
         'num_fiction_genres': num_fiction_genres,
         'num_dragon_books': num_dragon_books,
+
     }
 
     # Render the HTML template index.html with the data in the context variable
@@ -39,3 +41,10 @@ class BookListView(generic.ListView):
 
 class BookDetailView(generic.DetailView):
     model = Book
+
+class AuthorListView(generic.ListView):
+    model = Author
+    paginate_by = 10
+
+class AuthorDetailView(generic.DetailView):
+    model = Author
