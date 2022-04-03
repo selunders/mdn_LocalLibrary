@@ -1,7 +1,14 @@
-from django.shortcuts import render
+from audioop import reverse
+import datetime
+
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-# from flask import request_started
+
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from catalog.forms import RenewBookForm
+from django.contrib.auth.decorators import login_required, permission_required
 
 # Create your views here.
 from .models import Book, Author, BookInstance, Genre
@@ -71,3 +78,34 @@ class LoanedBooksListView(PermissionRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return BookInstance.objects.filter(status__exact='o').order_by('due_back')
+
+@login_required
+@permission_required('catalog.can_mark_returned', raise_exception=True)
+def renew_book_librarian(request, pk):
+    """View function for renewing a specific BookInstance by librarian."""
+    book_instance = get_object_or_404(BookInstance, pk=pk)
+
+    # If a POST request, process Form data
+    if request.method == 'POST':
+            # Create a form instance and populate it with data from the request (binding):
+            form = RenewBookForm(request.POST)
+
+            # Check if form is valid
+            if form.is_valid():
+                # process data in form.cleaned_data as required (here we just write it to the model due_back field)
+                book_instance.due_back = form.cleaned_data['renewal_date']
+                book_instance.save()
+
+                # redirect to a new URL:
+                return HttpResponseRedirect(reverse('all-borrowed'))
+    # if this is a GET request (or any other request) create the default form
+    else:
+        proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
+        form = RenewBookForm(initial={'renewal_date': proposed_renewal_date})
+
+        context = {
+            'form': form,
+            'book_instance': book_instance,
+        }
+
+        return render(request, 'catalog/book_renew_librarian.html', context)
