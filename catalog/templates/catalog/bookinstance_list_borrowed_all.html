@@ -9,7 +9,7 @@
     <ul>
         {% for bookinst in bookinstance_list %}
             <li>
-                <p><a href="{{ bookinst.book.get_absolute_url }}">{{ bookinst.book.title }}</a> (<a href="{{ bookinst.book.author.get_absolute_url }}">{{ bookinst.book.author }}</a>)<br/><span class="{% if bookinst.is_overdue %}text-danger{% endif %}">Due back {{ bookinst.due_back }} | Borrower: {{ bookinst.borrower.last_name }}, {{ bookinst.borrower.first_name }}</span>{% if perms.catalog.can_mark_returned %} | <a href="{% url 'renew-book-librarian' bookinst.id %}">Renew</a>{% endif %}</p>
+                <p><a href="{{ bookinst.book.get_absolute_url }}">{{ bookinst.book.title }}</a> (<a href="{{ bookinst.book.author.get_absolute_url }}">{{ bookinst.book.author }}</a>)<br/><span class="{% if bookinst.is_overdue %}text-danger{% endif %}">Due back {{ bookinst.due_back }} | Borrower: {{ bookinst.borrower.last_name }}, {{ bookinst.borrower.first_name }}</span>{% if perms.catalog.can_mark_returned %} | <a href="{% url 'renew-book-librarian' bookinst.id %}">Renew</a> | <a href="{% url 'return-book-librarian' bookinst.id %}">Mark returned</a>{% endif %}</p>
             </li>
             {% comment %} Also could've used {% url 'book-detail' bookinst.book.pk %} for the book's url {% endcomment %}
         {% endfor %}

@@ -1,6 +1,8 @@
 import datetime
 
 from django import forms
+from django.forms import HiddenInput, ModelForm
+from catalog.models import BookInstance
 # https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Forms
 
 from django.core.exceptions import ValidationError
@@ -22,3 +24,13 @@ class RenewBookForm(forms.Form):
 
         # Return cleaned data
         return data
+
+
+class ReturnBookModelForm(ModelForm):
+    def clean_status(self):
+        data = self.cleaned_data['status']
+        return data
+        
+    class Meta:
+        model = BookInstance
+        fields = ['status']

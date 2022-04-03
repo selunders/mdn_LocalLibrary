@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from catalog.forms import RenewBookForm
+from catalog.forms import RenewBookForm, ReturnBookModelForm
 from django.contrib.auth.decorators import login_required, permission_required
 
 # Create your views here.
@@ -109,3 +109,32 @@ def renew_book_librarian(request, pk):
         }
 
         return render(request, 'catalog/book_renew_librarian.html', context)
+
+@login_required
+@permission_required('catalog.can_mark_returned', raise_exception=True)
+def return_book_librarian(request, pk):
+    """View function for returning a specific BookInstance by librarian."""
+    book_instance = get_object_or_404(BookInstance, pk=pk)
+
+    # if POST, process data.
+    if request.method == 'POST':
+        form = ReturnBookModelForm(request.POST)
+
+        if form.is_valid():
+            book_instance.due_back = None
+            book_instance.borrower = None
+            book_instance.status = form.cleaned_data['status']
+            book_instance.save()
+
+            return HttpResponseRedirect(reverse('all-borrowed'))
+    
+    else:
+        proposed_return_status = 'a'
+        form = ReturnBookModelForm(initial={'status': proposed_return_status})
+
+        context = {
+            'form': form,
+            'book_instance': book_instance,
+        }
+
+        return render(request, 'catalog/book_return_librarian.html', context)
