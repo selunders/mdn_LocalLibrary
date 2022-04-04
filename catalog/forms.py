@@ -1,7 +1,7 @@
 import datetime
 
 from django import forms
-from django.forms import HiddenInput, ModelForm
+from django.forms import ModelForm
 from catalog.models import BookInstance
 # https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Forms
 
@@ -29,8 +29,10 @@ class RenewBookForm(forms.Form):
 class ReturnBookModelForm(ModelForm):
     def clean_status(self):
         data = self.cleaned_data['status']
+
+        # make sure you remember to return the cleaned data
         return data
-        
+
     class Meta:
         model = BookInstance
         fields = ['status']

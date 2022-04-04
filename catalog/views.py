@@ -6,12 +6,14 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from catalog.forms import RenewBookForm, ReturnBookModelForm
 from django.contrib.auth.decorators import login_required, permission_required
 
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 # Create your views here.
-from .models import Book, Author, BookInstance, Genre
+from catalog.models import Book, Author, BookInstance, Genre
 
 def index(request):
     """View function for home page of site."""
@@ -115,7 +117,6 @@ def renew_book_librarian(request, pk):
 def return_book_librarian(request, pk):
     """View function for returning a specific BookInstance by librarian."""
     book_instance = get_object_or_404(BookInstance, pk=pk)
-
     # if POST, process data.
     if request.method == 'POST':
         form = ReturnBookModelForm(request.POST)
@@ -138,3 +139,43 @@ def return_book_librarian(request, pk):
         }
 
         return render(request, 'catalog/book_return_librarian.html', context)
+
+class AuthorCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'catalog.can_mark_returned'
+    model = Author
+    fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
+    success_url = reverse_lazy('authors')
+    # could do __all__ for the fields but that's not recommended
+
+
+class AuthorUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'catalog.can_mark_returned'
+    model = Author
+    fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
+    success_url = reverse_lazy('authors')
+
+
+class AuthorDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'catalog.can_mark_returned'
+    model = Author
+    success_url = reverse_lazy('authors')
+
+class BookCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'catalog.can_mark_returned'
+    model = Book
+    fields = '__all__'
+    success_url = reverse_lazy('books')
+    # could do __all__ for the fields but that's not recommended
+
+
+class BookUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'catalog.can_mark_returned'
+    model = Book
+    fields = '__all__'
+    success_url = reverse_lazy('books')
+
+
+class BookDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'catalog.can_mark_returned'
+    model = Book
+    success_url = reverse_lazy('books')

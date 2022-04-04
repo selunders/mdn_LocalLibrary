@@ -8,11 +8,21 @@
 <ul>
     {% for book in book_list %}
     <li>
-        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}})
+        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}}){% if perms.catalog.can_mark_returned %} |
+        <a href="{% url 'book-update' book.id %}">Edit Book</a> |
+        <a href="{% url 'book-delete' book.id %}">Delete Book</a>{% endif %}
     </li>
     {% endfor %}
+    {% if perms.catalog.can_mark_returned %}
+    <li><a href="{% url 'book-create' %}">Add book</a></li>
+    {% endif %}
 </ul>
 {% else %}
-<p>There are no books in the library.</p>
+<ul>
+  <li>There are no books in the library.</li>
+  {% if perms.catalog.can_mark_returned %}
+  <li><a href="{% url 'book-create' %}">New book</a></li>
+  {% endif %}
+</ul>
 {% endif %}
-{% endblock %}
+{% endblock content %}

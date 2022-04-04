@@ -1,18 +1,25 @@
-{% extends "base_generic.html" %}
-
-{% block title %}<title>Local Library | Authors</title>{% endblock %}
-
-{% block content %}
+{% extends "base_generic.html" %} {% block title %}<title>
+  Local Library | Authors</title
+>{% endblock %} {% block content %}
 <h1>Authors</h1>
 {% if author_list %}
 <ul>
-    {% for author in author_list %}
-    <li>
-        <a href="{{ author.get_absolute_url }}">{{ author.last_name }}, {{ author.first_name}} ({{ author.date_of_birth }} - {% if author.date_of_death %}{{ author.date_of_death }}{% endif%})</a>
-    </li>
-    {% endfor %}
+  {% for author in author_list %}
+  <li>
+    <a href="{{ author.get_absolute_url }}">{{ author.last_name }}, {{ author.first_name }}</a>
+    ({{ author.date_of_birth }} - {% if author.date_of_death %}{{ author.date_of_death }}{% endif %}){% if perms.catalog.can_mark_returned %} |
+    <a href="{% url 'author-update' author.id %}">Edit Author</a> |
+    <a href="{% url 'author-delete' author.id %}">Delete Author</a>{% endif %}
+  </li>
+  {% endfor %} {% if perms.catalog.can_mark_returned %}
+  <li><a href="{% url 'author-create' %}">New author</a></li>
+  {% endif %}
 </ul>
 {% else %}
-<p>There are no authors in the library.</p>
-{% endif %}
-{% endblock %}
+<ul>
+  <li>There are no authors in the library.</li>
+  {% if perms.catalog.can_mark_returned %}
+  <li><a href="{% url 'author-create' %}">New author</a></li>
+  {% endif %}
+</ul>
+{% endif %} {% endblock %}
