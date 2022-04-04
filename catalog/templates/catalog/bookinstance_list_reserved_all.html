@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>LLibrary | Reserved Books</title>{% endblock title %}
+
+{% block content %}
+    <h1>Reserved Books</h1>
+
+    {% if bookinstance_list %}
+    <ul>
+        {% for bookinst in bookinstance_list %}
+            <li>
+                <p><a href="{{ bookinst.book.get_absolute_url }}">{{ bookinst.book.title }}</a> (<a href="{{ bookinst.book.author.get_absolute_url }}">{{ bookinst.book.author }}</a>) | Reserved for: {{ bookinst.borrower }} | <a href="{% url 'checkout-book-librarian' bookinst.id %}">Checkout</a> | <a href="{% url 'bookinstance-update' bookinst.id %}">Edit Reservation</a></p>
+            </li>
+            {% comment %} Also could've used {% url 'book-detail' bookinst.book.pk %} for the book's url {% endcomment %}
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>There are currently no reserved books.</p>
+    {% endif%}
+{% endblock %}

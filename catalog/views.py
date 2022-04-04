@@ -81,6 +81,16 @@ class LoanedBooksListView(PermissionRequiredMixin, generic.ListView):
     def get_queryset(self):
         return BookInstance.objects.filter(status__exact='o').order_by('due_back')
 
+class ReservedBooksListView(PermissionRequiredMixin, generic.ListView):
+    """Generic class-based view listing all books on loan. (For staff)"""
+    permission_required = 'catalog.can_mark_returned'
+    model = BookInstance
+    template_name = 'catalog/bookinstance_list_reserved_all.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(status__exact='r').order_by('book')
+
 @login_required
 @permission_required('catalog.can_mark_returned', raise_exception=True)
 def renew_book_librarian(request, pk):

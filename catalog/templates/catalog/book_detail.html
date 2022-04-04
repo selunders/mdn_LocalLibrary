@@ -27,7 +27,5 @@
       <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
       <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>
     {% endfor %}
-    <hr>
-    <a href="{% url 'bookinstance-create' book.id %}">Add Copy</a>
   </div>
 {% endblock %}

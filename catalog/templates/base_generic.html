@@ -39,6 +39,11 @@
             <br/>
             <li>Staff Links</li>
             <li><a href="{% url 'all-borrowed' %}">Books Out</a></li>
+            <li><a href="{% url 'all-reserved' %}">Reserved Books</a></li>
+            <br/>
+            <li><a href="{% url 'author-create' %}">Add Author</a></li>
+            <li><a href="{% url 'book-create' %}">Add Book</a></li>
+            <li><a href="{% url 'bookinstance-create' %}">Add BookInstance</a></li>
             {% endif %}
           </ul>
           {% endblock %} 

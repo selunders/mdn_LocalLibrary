@@ -17,6 +17,7 @@ urlpatterns += [
 # Staff Views
 urlpatterns += [
     path('on-loan/', views.LoanedBooksListView.as_view(), name='all-borrowed'),
+    path('reserved/', views.ReservedBooksListView.as_view(), name='all-reserved'),
     path('book/<uuid:pk>/renew/', views.renew_book_librarian, name='renew-book-librarian'),
     path('book/<uuid:pk>/return/', views.return_book_librarian, name='return-book-librarian'),
     path('book/<uuid:pk>/checkout/', views.checkout_book_librarian, name='checkout-book-librarian'),
@@ -37,7 +38,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path('bookinstance/create/<int:pk>', views.BookInstanceCreate.as_view(), name='bookinstance-create'),
+    path('bookinstance/create/', views.BookInstanceCreate.as_view(), name='bookinstance-create'),
     path('bookinstance/<uuid:pk>/update/', views.BookInstanceUpdate.as_view(), name='bookinstance-update'),
     path('bookinstance/<uuid:pk>/delete/', views.BookInstanceDelete.as_view(), name='bookinstance-delete'),
 ]

@@ -27,6 +27,10 @@ class RenewBookForm(forms.Form):
 
 
 class ReturnBookModelForm(ModelForm):
+    def clean_borrower(self):
+        data = self.cleaned_data['borrower']
+        return data
+        
     def clean_status(self):
         data = self.cleaned_data['status']
 
@@ -35,7 +39,7 @@ class ReturnBookModelForm(ModelForm):
 
     class Meta:
         model = BookInstance
-        fields = ['status']
+        fields = ['status','borrower']
 
 class CheckOutBookModelForm(ModelForm):
     due_back = forms.DateField(help_text="Default 3 Weeks, max 4. Enter in form YYYY-MM-DD")
