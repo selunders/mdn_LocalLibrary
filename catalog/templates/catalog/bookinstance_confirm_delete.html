@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %} {% block title %}<title>
+  Local Library | {{ bookinstance.book.title }}
+</title>
+{% endblock %} {% block content %}
+<h1>Delete Copy</h1>
+<p>Are you sure you want to delete this copy of: {{ bookinstance.book.title }}? (ID: {{ bookinstance }})</p>
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete." />
+</form>
+{% endblock %}

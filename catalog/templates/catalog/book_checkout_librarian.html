@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+{% block title %}<title>
+  Local Library | {{ bookinstance.book.title }}
+</title>
+{% endblock %}
+{% block content %}
+    <h1>Check Out: {{ book_instance.book.title }}</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock content %}

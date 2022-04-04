@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from catalog.forms import RenewBookForm, ReturnBookModelForm
+from catalog.forms import CheckOutBookModelForm, RenewBookForm, ReturnBookModelForm
 from django.contrib.auth.decorators import login_required, permission_required
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -167,15 +167,59 @@ class BookCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('books')
     # could do __all__ for the fields but that's not recommended
 
-
 class BookUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'catalog.can_mark_returned'
     model = Book
     fields = '__all__'
     success_url = reverse_lazy('books')
 
-
 class BookDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'catalog.can_mark_returned'
     model = Book
     success_url = reverse_lazy('books')
+
+class BookInstanceCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'catalog.can_mark_returned'
+    model = BookInstance
+    fields = ['book','imprint']
+    success_url = reverse_lazy('books')
+    
+
+class BookInstanceUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'catalog.can_mark_returned'
+    model = BookInstance
+    fields = ['book','imprint','due_back','borrower','status']
+    success_url = reverse_lazy('books')
+
+class BookInstanceDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'catalog.can_mark_returned'
+    model = BookInstance
+    success_url = reverse_lazy('books')
+
+@login_required
+@permission_required('catalog.can_mark_returned', raise_exception=True)
+def checkout_book_librarian(request, pk):
+    """View function for checking out a specific BookInstance by librarian."""
+    book_instance = get_object_or_404(BookInstance, pk=pk)
+    # if POST, process data.
+    if request.method == 'POST':
+        form = CheckOutBookModelForm(request.POST)
+
+        if form.is_valid():
+            book_instance.due_back = form.cleaned_data['due_back']
+            book_instance.borrower = form.cleaned_data['borrower']
+            book_instance.status = 'o'
+            book_instance.save()
+
+            return HttpResponseRedirect(reverse('all-borrowed'))
+    
+    else:
+        proposed_due_date = datetime.date.today() + datetime.timedelta(weeks=3)
+        form = CheckOutBookModelForm(initial={'due_back': proposed_due_date})
+
+        context = {
+            'form': form,
+            'book_instance': book_instance,
+        }
+
+        return render(request, 'catalog/book_checkout_librarian.html', context)
